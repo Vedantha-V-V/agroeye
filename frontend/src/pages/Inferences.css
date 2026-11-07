@@ -1,0 +1,81 @@
+.inferences-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 24px;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.inf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.back-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.back-btn:hover {
+  background: var(--bg-card);
+}
+
+.inf-header-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.inf-sparkle {
+  color: var(--green-primary);
+  font-size: 15px;
+}
+
+.inf-header-title h1 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.inf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+  gap: 12px;
+}
+
+.inf-empty svg {
+  width: 42px;
+  height: 42px;
+}
+
+.inf-empty-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.inf-empty-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  max-width: 280px;
+  line-height: 1.5;
+}

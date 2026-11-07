@@ -32,6 +32,9 @@ model_cache/
 data/
 augmented/
 Tomato Leaf Disease Dataset/
+*.zip
+backend/archive/
+backend/db/
 
 node_modules/
 .env

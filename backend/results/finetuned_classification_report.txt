@@ -1,0 +1,28 @@
+
+AgroEye — Fine-tuned Classification Report
+Base Model : google/vit-base-patch16-224
+Dataset    : ./data/color
+Classes    : 13
+Epochs     : 3
+Val Accuracy: 0.9848 (98.48%)
+Generated  : 2026-05-24 23:57:24
+======================================================================
+                                             precision    recall  f1-score   support
+
+                        Potato_Early_blight       0.99      1.00      0.99        71
+                         Potato_Late_blight       1.00      1.00      1.00        80
+                             Potato_healthy       1.00      1.00      1.00        32
+                      Tomato_Bacterial_spot       1.00      1.00      1.00        81
+                        Tomato_Early_blight       0.97      0.95      0.96        91
+                         Tomato_Late_blight       0.95      0.96      0.96        83
+                           Tomato_Leaf_Mold       1.00      0.97      0.98        58
+                  Tomato_Septoria_leaf_spot       0.96      0.99      0.98        82
+Tomato_Spider_mites Two-spotted_spider_mite       0.98      0.99      0.98        86
+                         Tomato_Target_Spot       1.00      0.98      0.99        87
+       Tomato_Tomato_Yellow_Leaf_Curl_Virus       1.00      0.99      0.99        85
+                 Tomato_Tomato_mosaic_virus       0.99      1.00      0.99        66
+                             Tomato_healthy       0.99      1.00      0.99        83
+
+                                   accuracy                           0.98       985
+                                  macro avg       0.99      0.99      0.99       985
+                               weighted avg       0.98      0.98      0.98       985
