@@ -5,21 +5,21 @@
 AgroEye is an automated crop leaf disease monitoring system that integrates live RTMP/video ingestion, Vision Transformer (ViT) classification models, FastAPI backend services, and a React web dashboard.
 
 ```
-+------------------+         RTMP Feed          +----------------------+
-|  Drone / Camera  | ------------------------> | FFMPEG Frame Ingest  |
-+------------------+                           +----------------------+
-                                                          |
-                                                          v (0.5 fps)
-+------------------+         JSON / Base64     +----------------------+
-| React Dashboard  | <------------------------ |   FastAPI Backend    |
-+------------------+        /infer endpoint    |      (main.py)       |
-                                               +----------------------+
-                                                          |
-                                                          v
-                                               +----------------------+
-                                               |  ViT Crop Classifier |
-                                               |   (finetuned / hub)  |
-                                               +----------------------+
++------------------+         RTMP Feed          +---------------------------+
+|  Drone / Camera  | ------------------------> |  Nginx RTMP (Port 1935)   |
++------------------+                           +---------------------------+
+                                                             |
+                                                             v (0.5 fps)
++------------------+         JSON / Base64     +---------------------------+
+| React Dashboard  | <------------------------ |    FFmpeg Frame Ingest    |
+| (Results & Logs) |        /infer endpoint    |  (C:\nginx-rtmp\nginx.exe)|
++------------------+                           +---------------------------+
+                                                             |
+                                                             v
+                                               +---------------------------+
+                                               |  ViT Crop Classifier      |
+                                               |   (finetuned / hub)       |
+                                               +---------------------------+
 ```
 
 ---
@@ -29,72 +29,61 @@ AgroEye is an automated crop leaf disease monitoring system that integrates live
 - Python 3.10+
 - Node.js 18+ and npm
 - `ffmpeg` installed and accessible in system PATH
+- Nginx with RTMP module
 
 ---
 
-## 2. Running the Backend Server
+## 2. Ingest & Streaming Pipeline Lifecycle
+
+1. **Stream Start Sequence**:
+   - User enters stream key (e.g. `agroeye`) and clicks **Start Stream**.
+   - Backend first starts `C:\nginx-rtmp\nginx.exe` to bind the RTMP listener at port 1935.
+   - After RTMP listener initialization, `ffmpeg` starts extracting frames at `0.5 fps` into `backend/frames/`.
+   - Both Nginx and FFmpeg process logs are captured and broadcast to `GET /stream/logs`.
+2. **Inference Loop**:
+   - Frontend polls `GET /infer` to classify incoming frames with the ViT model.
+3. **Stream Teardown Sequence**:
+   - User clicks **Stop Stream**.
+   - Backend first terminates `ffmpeg` to flush and release frame handles.
+   - Backend then stops `nginx.exe` cleanly (`nginx -s stop`).
+
+---
+
+## 3. Running the Backend Server
 
 1. Navigate to the backend directory:
    ```bash
    cd backend
    ```
 
-2. Activate virtual environment (if using one):
-   ```bash
-   # Windows PowerShell:
-   ..\.venv\Scripts\Activate.ps1
-   ```
-
-3. Install required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. Start the FastAPI server:
+2. Start the FastAPI server:
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8000 --reload
    ```
 
-The backend server exposes the following endpoints:
+### API Endpoints
+
 - `POST /auth/login`: Authenticates user against `backend/db/profiles.json`.
 - `GET /auth/profile`: Returns active user profile.
-- `POST /stream/start`: Starts background `ffmpeg` process capturing from RTMP stream key (`rtmp://localhost:1935/live/<stream_key>`) to `frames/`.
-- `POST /stream/stop`: Terminates active `ffmpeg` process.
-- `GET /stream/status`: Returns current streaming status.
-- `GET /infer`: Performs inference on latest frame in `backend/frames/` and returns detection results, health score, confidence, and base64 image frame.
-- `GET /health`: Health status of the model and inference server.
+- `POST /stream/start`: Starts Nginx RTMP server, then starts FFmpeg frame extraction.
+- `POST /stream/stop`: Stops FFmpeg first, then stops Nginx server.
+- `GET /stream/status`: Returns streaming state.
+- `GET /stream/logs`: Returns live stdout/stderr log lines for Nginx and FFmpeg.
+- `GET /infer`: Performs inference on latest frame in `backend/frames/`.
+- `GET /health`: Health status of model and server.
 
 ---
 
-## 3. Running the Frontend Dashboard
+## 4. Running the Frontend Dashboard
 
 1. Navigate to the frontend directory:
    ```bash
    cd frontend
-   ```
-
-2. Install dependencies:
-   ```bash
    npm install
-   ```
-
-3. Start development server:
-   ```bash
    npm run dev
    ```
 
-4. Open the browser at `http://localhost:5173`.
-   - Sign in using credentials from `backend/db/profiles.json`:
-     - **Username**: `agroeyeadmin`
-     - **Password**: `agroeye@123`
-   - Enter your stream key (e.g. `agroeye`) and click **Start Stream**.
-   - The stream key input locks and real-time frames with model inferences are displayed on the dashboard.
-
----
-
-## 4. Live Video Streaming with RTMP & FFMPEG
-
-To stream into the pipeline from OBS, phone camera (e.g., Larix Broadcaster), or drone feed:
-- RTMP Server URL: `rtmp://localhost:1935/live`
-- Stream Key: `agroeye` (or custom key entered in dashboard)
-- Frames are captured at 0.5 FPS into `backend/frames/` and analyzed automatically.
+2. Open `http://localhost:5173`.
+   - Login with the credentials at profile.json
+   - Enter stream key and click **Start Stream**.
+   - Switch between **Results Obtained** and **Pipeline Logs** tabs to monitor both Nginx RTMP and FFmpeg in real-time.

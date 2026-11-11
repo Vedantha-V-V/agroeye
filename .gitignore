@@ -29,6 +29,8 @@ __pycache__/
 .venv/
 frames/
 model_cache/
+models/
+finetuned/
 data/
 augmented/
 Tomato Leaf Disease Dataset/

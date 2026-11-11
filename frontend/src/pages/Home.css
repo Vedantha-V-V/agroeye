@@ -59,33 +59,61 @@
   color: var(--text-muted);
 }
 
-/* Results card */
+/* Results / Logs card */
 .results-card {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 140px;
 }
 
 .card-header-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
   margin-bottom: 6px;
 }
 
-.card-title {
-  font-size: 13px;
+.card-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  font-size: 12px;
   font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
   color: var(--text-primary);
+  background: var(--bg-secondary);
+}
+
+.tab-btn:hover {
+  color: var(--text-secondary);
 }
 
 .status-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  margin-left: auto;
 }
 
 .status-dot.offline {
@@ -104,6 +132,47 @@
   font-size: 11px;
   color: var(--text-muted);
   line-height: 1.4;
+}
+
+/* Logs terminal */
+.logs-terminal {
+  flex: 1;
+  background: #0d0d0d;
+  border: 1px solid #202020;
+  border-radius: 8px;
+  padding: 6px 8px;
+  overflow-y: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  line-height: 1.35;
+  height: 90px;
+}
+
+.log-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.log-line {
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding: 1px 0;
+}
+
+.log-info {
+  color: #a3a3a3;
+}
+
+.log-nginx {
+  color: #38bdf8;
+}
+
+.log-ffmpeg {
+  color: #4ade80;
+}
+
+.log-err {
+  color: #f87171;
 }
 
 /* Stream controls */
@@ -224,15 +293,13 @@
   transition: border-color 0.2s;
 }
 
-.govt-card {
-  flex: 1 1 auto;
+.govt-card,
+.weather-card {
+  flex: 1 1 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
-}
-
-.weather-card {
-  flex-shrink: 0;
+  justify-content: space-between;
 }
 
 .past-inf-card {
@@ -266,13 +333,15 @@
   gap: 6px;
   margin-top: 4px;
   overflow: hidden;
+  flex: 1;
+  justify-content: space-evenly;
 }
 
 .scheme-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 7px 10px;
+  padding: 6px 10px;
   background: var(--bg-secondary);
   border-radius: 8px;
 }
@@ -301,11 +370,22 @@
 }
 
 /* Weather */
+.weather-city-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--green-primary);
+  background: var(--green-bg);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
 .weather-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   margin-top: 2px;
+  flex: 1;
+  justify-content: space-evenly;
 }
 
 .weather-main {
