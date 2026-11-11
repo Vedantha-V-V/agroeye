@@ -64,7 +64,7 @@ export default function Inferences() {
         </Link>
         <div className="inf-header-title">
           <span className="inf-sparkle">✦</span>
-          <h1>Past Inferences & References</h1>
+          <h1>Past Inferences</h1>
         </div>
         <div style={{ width: 22 }}></div>
       </header>

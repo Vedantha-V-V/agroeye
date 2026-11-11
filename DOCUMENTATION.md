@@ -33,7 +33,7 @@ AgroEye is an automated crop leaf disease monitoring system that integrates live
    v                                           +---------------------------+
 +----------------------+                                     |
 | Google Gemini        | <-----------------------------------+
-| 1.5 Flash Generation |
+| 3.1 Flash Generation |
 +----------------------+
 ```
 

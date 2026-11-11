@@ -41,24 +41,16 @@ npm run dev
 
 - Frontend App: `http://localhost:5173`
 
-### 5. Start Nginx RTMP for Windows
+### 5. Install and Setup Nginx RTMP for Windows
 
 ```ps1
 C:\nginx-rtmp\nginx.exe
 ```
 
-### 6. Start FFmpeg (Manual Frame Extraction)
-
-```ps1
-ffmpeg -i rtmp://localhost:1935/live/agroeye -vf fps=0.5 -strftime 1 path\to\store\images\frames\frame_%Y%m%d_%H%M%S.jpg
-```
-
----
-
 ## Pipelines & Features
 
 ### Ingest & Inference Pipeline
-1. Enter your Stream Key (e.g. `agroeye`) in the dashboard.
+1. Enter your Stream Key in the dashboard.
 2. Click **Start Stream** — this automatically:
    - Starts the Nginx RTMP server (`C:\nginx-rtmp\nginx.exe`).
    - Starts `ffmpeg` to extract frames into `backend/frames/`.
@@ -70,6 +62,6 @@ ffmpeg -i rtmp://localhost:1935/live/agroeye -vf fps=0.5 -strftime 1 path\to\sto
 1. Ensure Qdrant is running on port `6333` and `GEMINI_API_KEY` is set in `backend/.env`.
 2. Navigate to **AI Insights** (`/insights`) in the dashboard.
 3. Click **⬆ Embed Farm Data** to vectorize farm profiles and disease detection records into Qdrant using local `all-MiniLM-L6-v2` embeddings.
-4. Use the interactive chat to query crop health, recurring patterns, and treatments powered by Google Gemini 1.5 Flash grounded on Qdrant context hits.
+4. Use the interactive chat to query crop health, recurring patterns, and treatments powered by Google Gemini 3.5 Flash grounded on Qdrant context hits.
 
 For full architecture and API details, see [DOCUMENTATION.md](DOCUMENTATION.md).

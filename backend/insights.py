@@ -34,11 +34,11 @@ EMBED_DIM       = 384          # all-MiniLM-L6-v2
 EMBED_THRESHOLD = 0.40
 
 # Load local embedding model once at startup
-_embed_model = SentenceTransformer("all-MiniLM-L6-v2")
+embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
-def _embed(text: str) -> list[float]:
-    return _embed_model.encode(text, normalize_embeddings=True).tolist()
+def embed(text: str) -> list[float]:
+    return embed_model.encode(text, normalize_embeddings=True).tolist()
 
 
 def _gemini_client() -> genai.Client:
@@ -76,7 +76,7 @@ def embed_profile(profile: dict) -> dict:
         f"Crops grown: {', '.join(profile.get('crops', []))}. "
         f"Language preference: {profile.get('language', 'English')}."
     )
-    vec = _embed(text)
+    vec = embed(text)
     qc = _qdrant()
     _ensure_collection(qc)
     qc.upsert(
@@ -127,7 +127,7 @@ def embed_inferences(inferences: list[dict]) -> dict:
             f"Anomaly flags: {anomalies}. "
             f"Frame: {frame}. Timestamp: {ts}."
         )
-        vec = _embed(text)
+        vec = embed(text)
         points.append(PointStruct(
             id=_doc_id("inference:" + (inf.get("id") or frame or ts)),
             vector=vec,
@@ -168,7 +168,7 @@ def embed_all() -> dict:
 # ── Retrieval + Generation ─────────────────────────────────────────
 
 def retrieve_context(query: str, top_k: int = 5) -> list[dict]:
-    vec = _embed(query)
+    vec = embed(query)
     qc = _qdrant()
     _ensure_collection(qc)
     hits = qc.query_points(

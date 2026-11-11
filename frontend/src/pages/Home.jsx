@@ -382,7 +382,7 @@ export default function Home() {
           <div className="stream-key-input">
             <input
               type="text"
-              placeholder="Enter Stream Key (e.g. agroeye)"
+              placeholder="Enter Stream Key"
               value={streamKey}
               disabled={isStreaming}
               onChange={(e) => setStreamKey(e.target.value)}
