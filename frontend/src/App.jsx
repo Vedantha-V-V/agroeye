@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Inferences from './pages/Inferences.jsx'
 import Auth from './pages/Auth.jsx'
+import Insights from './pages/Insights.jsx'
 
 function ProtectedRoute({ children }) {
   const user = localStorage.getItem('agroeye_user')
@@ -28,6 +29,14 @@ function App() {
         element={
           <ProtectedRoute>
             <Inferences />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/insights"
+        element={
+          <ProtectedRoute>
+            <Insights />
           </ProtectedRoute>
         }
       />

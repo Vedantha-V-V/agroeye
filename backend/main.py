@@ -7,6 +7,10 @@ import os, glob, base64, json, subprocess, threading, time, shutil
 from pathlib import Path
 from datetime import datetime
 from collections import deque
+from typing import Optional
+
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +19,9 @@ from pydantic import BaseModel
 from PIL import Image
 
 from leaf_detector import LeafDetector
+
+# ── Insights (Gemini + Qdrant RAG) ───────────────────────────────
+from insights import embed_all, embed_profile, embed_inferences, generate_insight, retrieve_context
 
 # ── Paths & Config ───────────────────────────────────────────
 BASE_DIR         = Path(__file__).resolve().parent
@@ -382,6 +389,51 @@ def stream_logs():
     }
 
 # ── Health & Inference Endpoints ──────────────────────────────
+
+# ── Insights Schemas ──────────────────────────────────────────
+class InsightQueryRequest(BaseModel):
+    query: str
+
+class EmbedRequest(BaseModel):
+    pass
+
+# ── Insights Endpoints ─────────────────────────────────────────
+@app.post("/insights/embed")
+def insights_embed():
+    """Embed profile + high-severity inferences into Qdrant."""
+    try:
+        result = embed_all()
+        add_log(f"[INSIGHTS] Embedding complete: {result}")
+        return {"status": "ok", "result": result}
+    except Exception as e:
+        add_log(f"[INSIGHTS ERROR] Embedding failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/insights/query")
+def insights_query(req: InsightQueryRequest):
+    """RAG: retrieve context from Qdrant and generate Gemini insight."""
+    if not req.query.strip():
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+    try:
+        profile = load_profile()
+        result = generate_insight(req.query, profile=profile)
+        add_log(f"[INSIGHTS] Query answered: {req.query[:60]}")
+        return result
+    except RuntimeError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        add_log(f"[INSIGHTS ERROR] {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/insights/context")
+def insights_context(query: str, top_k: int = 5):
+    """Return raw Qdrant retrieval results for a query (debugging)."""
+    try:
+        hits = retrieve_context(query, top_k=top_k)
+        return {"query": query, "hits": hits}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/health")
 def health():
     return {

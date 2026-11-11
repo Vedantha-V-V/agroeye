@@ -511,7 +511,25 @@ export default function Home() {
               <polyline points="9 18 15 12 9 6" />
             </svg>
           </div>
-          <p className="past-inf-sub">View previous AI scan results</p>
+          <p className="past-inf-sub">Previous crop scan results</p>
+        </Link>
+
+        {/* AI Insights */}
+        <Link to="/insights" className="info-card past-inf-card">
+          <div className="card-header-row">
+            <div className="card-header-left">
+              <div className="card-icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+              </div>
+              <h3 className="card-title">AI Insights</h3>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </div>
+          <p className="past-inf-sub">Farm Focused AI Insights</p>
         </Link>
       </div>
     </div>
